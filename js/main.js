@@ -6,22 +6,22 @@ function init() {
 	canvas.height = globals.CANVAS_HEIGHT;
 
 	var tetris = new Tetris(canvas, globals.ROWS, globals.COLS);
-	tetris.currentBlock = new Block(tetris, "asdf", new Coordinate(0, 1), 'red');
+	tetris.currentBlock = new Block(tetris, 's', new Coordinate(0, 5), 'red');
 	bindKeys(tetris);
-	tetris.draw();
+	tetris.run();
 }
 
 function bindKeys(tetris) {
 	window.onkeypress = function(e) {
 		switch(e.keyCode) {
 			case globals.MOVE_LEFT_KEY:
-				tetris.currentBlock.translateLeft();
+				tetris.tryTranslateLeft();
 				break;
 			case globals.MOVE_RIGHT_KEY:
-				tetris.currentBlock.translateRight();
+				tetris.tryTranslateRight();
 				break;
 			case globals.MOVE_DOWN_KEY:
-				tetris.currentBlock.translateDown();
+				tetris.translateDownAndHandleCollisions();
 				break;
 			default:
 				;
