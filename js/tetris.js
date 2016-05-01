@@ -1,8 +1,18 @@
 /***
  * tetris.js
  * Silas Hsu
+ *
+ * Main game code for Tetris, featuring methods for drawing and animation, block translation, collision detection, and
+ * line clearing.
  ***/
 
+/**
+ * Creates a new Tetris object.
+ * Parameters:
+ *   canvas - HTML5 canvas on which to draw the game
+ *   numRows - number of rows in the grid
+ *   numCols - number of cols in the grid
+ */
 var Tetris = function(canvas, numRows, numCols) {
 	// Constant parameters
 	this.canvas = canvas;
@@ -38,7 +48,7 @@ Tetris.prototype.run = function() {
 	// Calculations done, time to draw a bunch of stuff!
 	this.canvasContext.clearRect(0, 0, canvas.width, canvas.height);
 	this.drawGridLines();
-	this.currentBlock.draw();
+	this.drawBlock(this.currentBlock);
 	this.drawStaticBlocks();
 
 	window.requestAnimationFrame(this.run.bind(this));
@@ -58,11 +68,34 @@ Tetris.prototype.getMsSinceLastFrame = function() {
 }
 
 /**
+ * Returns a boolean describing if the specified block is in bounds and has no overlaps with static BLOCK_SPAWN_ROW.
+ * Because blocks fall downward and can occupy the space below partially, the bottommost row and coordinates directly
+ * above occupied locations are considered invalid as well.
+ */
+Tetris.prototype.hasValidLocation = function(block) {
+	for (i in block.occupiedSpaces) {
+		var row = block.occupiedSpaces[i].row;
+		var col = block.occupiedSpaces[i].col;
+		if (row < 0 ||
+			row >= this.numRows - 1 || // Take note: last row considered invalid
+			col < 0 ||
+			col >= this.numCols ||
+			this.staticBlocks[row][col] ||
+			this.staticBlocks[row + 1][col]) // Take note: locations above a static block considered invalid
+		{
+				return false;
+		}
+	}
+	return true;
+}
+
+/**
  * Translates the current block left, if there is nothing to collide with.  Otherwise does nothing.
  */
 Tetris.prototype.tryTranslateLeft = function() {
-	if (!this.currentBlock.hasCollisionLeft()) {
-		this.currentBlock.translateLeft();
+	this.currentBlock.translateLeft();
+	if (!this.hasValidLocation(this.currentBlock)) {
+		this.currentBlock.translateRight();
 	}
 }
 
@@ -70,8 +103,9 @@ Tetris.prototype.tryTranslateLeft = function() {
  * Translates the current block right, if there is nothing to collide with.  Otherwise does nothing.
  */
 Tetris.prototype.tryTranslateRight = function() {
-	if (!this.currentBlock.hasCollisionRight()) {
-		this.currentBlock.translateRight();
+	this.currentBlock.translateRight();
+	if (!this.hasValidLocation(this.currentBlock)) {
+		this.currentBlock.translateLeft();
 	}
 }
 
@@ -80,17 +114,36 @@ Tetris.prototype.tryTranslateRight = function() {
  * grid or a static block, freezes the current block and makes a new block to fall from the top of the grid.
  */
 Tetris.prototype.translateDownAndHandleCollisions = function() {
-	var block = this.currentBlock;
-	block.translateDown(); // The row below is always unoccupied, since we checked in a previous call to this method.
-	if (block.hasCollisionBelow()) {
-
-		for (i in block.occupiedSpaces) {
-			var coordinate = block.occupiedSpaces[i];
+	var currentBlock = this.currentBlock;
+	currentBlock.translateDown();
+	if (!this.hasValidLocation(this.currentBlock)) {
+		for (i in currentBlock.occupiedSpaces) {
+			var coordinate = currentBlock.occupiedSpaces[i];
 			var row = coordinate.row;
 			var col = coordinate.col;
-			this.staticBlocks[row][col] = new Block(this, 'static', new Coordinate(row, col), block.color);
+			this.staticBlocks[row][col] = new Block('static', row, col, currentBlock.color);
 		}
-		this.currentBlock = Block.createRandomBlock(this, new Coordinate(globals.BLOCK_SPAWN_ROW, globals.BLOCK_SPAWN_COL));
+		this.currentBlock = Block.createRandomBlock(globals.BLOCK_SPAWN_ROW, globals.BLOCK_SPAWN_COL);
+	}
+}
+
+/**
+ * Rotates the current block clockwise, if there is nothing to collide with.  Otherwise does nothing.
+ */
+Tetris.prototype.tryRotateClockwise = function() {
+	this.currentBlock.rotateClockwise();
+	if (!this.hasValidLocation(this.currentBlock)) {
+		this.currentBlock.rotateCounterclockwise();
+	}
+}
+
+/**
+ * Rotates the current block counterclockwise, if there is nothing to collide with.  Otherwise does nothing.
+ */
+Tetris.prototype.tryRotateCounterclockwise = function() {
+	this.currentBlock.rotateCounterclockwise();
+	if (!this.hasValidLocation(this.currentBlock)) {
+		this.currentBlock.rotateClockwise();
 	}
 }
 
@@ -99,7 +152,7 @@ Tetris.prototype.translateDownAndHandleCollisions = function() {
  */
 Tetris.prototype.drawGridLines = function() {
 	var ctx = this.canvasContext;
-	ctx.strokeStyle = 'grey';
+	ctx.strokeStyle = globals.GRIDLINE_COLOR;
 	ctx.beginPath();
 
 	// Draw the vertical grid lines
@@ -123,12 +176,32 @@ Tetris.prototype.drawGridLines = function() {
 };
 
 /**
+ * Draws the specified block on the canvas.
+ */
+Tetris.prototype.drawBlock = function(block) {
+	var ctx = this.canvasContext;
+	ctx.fillStyle = block.color;
+	ctx.strokeStyle = globals.BLOCK_BORDER_COLOR;
+	var cellWidth = this.cellWidth;
+	var cellHeight = this.cellHeight;
+
+	block.occupiedSpaces.forEach( function(coordinate) {
+		var canvasX = coordinate.col * cellWidth;
+		var canvasY = coordinate.row * cellHeight;
+		ctx.fillRect(canvasX, canvasY + block.yOffset, cellWidth, cellHeight);
+		ctx.strokeRect(canvasX, canvasY + block.yOffset, cellWidth, cellHeight);
+	});
+}
+
+/**
  * Draws all the blocks in this.staticBlocks.
  */
 Tetris.prototype.drawStaticBlocks = function() {
-	this.staticBlocks.forEach( function(row) {
-		row.forEach( function(block) {
-			block.draw();
-		});
-	});
+	for (i in this.staticBlocks) {
+		for (j in this.staticBlocks[i]) {
+			if (this.staticBlocks[i][j]) {
+				this.drawBlock(this.staticBlocks[i][j])
+			}
+		}
+	}
 }

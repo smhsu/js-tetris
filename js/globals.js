@@ -15,9 +15,11 @@ globals = {
 	BLOCK_SPAWN_COL: 4,
 	INITIAL_MS_PER_ROW: 800,
 
-	MOVE_LEFT_KEY: 'a'.charCodeAt(0),
-	MOVE_RIGHT_KEY: 'd'.charCodeAt(0),
-	MOVE_DOWN_KEY: 's'.charCodeAt(0),
+	MOVE_LEFT_KEY: 'a',
+	MOVE_RIGHT_KEY: 'd',
+	MOVE_DOWN_KEY: 's',
+	ROTATE_CLOCKWISE_KEY: 'l',
+	ROTATE_COUNTERCLOCKWISE_KEY: 'j',
 
 	BLOCK_NUMBERS: [ // The index is the number
 		'i',
@@ -28,7 +30,6 @@ globals = {
 		't',
 		'z'
 	],
-
 	BLOCK_COLORS: {
 		'i': 'red',
 		'j': 'magenta',
@@ -37,5 +38,8 @@ globals = {
 		's': 'blue',
 		't': 'grey',
 		'z': 'lime'
-	}
+	},
+
+	GRIDLINE_COLOR: 'grey',
+	BLOCK_BORDER_COLOR: 'black'
 }
