@@ -5,7 +5,7 @@ function init() {
 	canvas.width = globals.CANVAS_WIDTH;
 	canvas.height = globals.CANVAS_HEIGHT;
 
-	var tetris = new Tetris(canvas, globals.ROWS, globals.COLS);
+	var tetris = new Tetris(canvas, globals.NUM_ROWS, globals.NUM_COLS);
 	tetris.currentBlock = new Block('i', 0, 5, 'red');
 	bindKeys(tetris);
 	tetris.run();

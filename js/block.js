@@ -66,7 +66,7 @@ var Block = function(type, row, col, color) {
 		this.occupiedSpaces[2] = new Coordinate(row + 1, col);
 		this.occupiedSpaces[3] = new Coordinate(row + 1, col + 1);
 	}
-};
+}
 
 /**
  * Creates a block of random type.  All blocks of the same type will have the same color.

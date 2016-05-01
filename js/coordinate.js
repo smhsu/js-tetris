@@ -9,7 +9,7 @@
 var Coordinate = function(row, col) {
 	this.row = row;
 	this.col = col;
-};
+}
 
 /**
  * Returns a new coordinate rotated around the specified coordinate, either clockwise or counterclockwise 90 degrees.

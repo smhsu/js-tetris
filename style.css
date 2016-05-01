@@ -1,4 +1,14 @@
 canvas {
 	height: 95vh;
-	border: 1px solid #000000;
+	border: 1px solid black;
+	margin-right: 30px;
+}
+
+#info-panel {
+	border: 1px solid black;
+	padding-left: 20px;
+	padding-right: 20px;
+
+	vertical-align: top;
+	font-family: sans-serif;
 }

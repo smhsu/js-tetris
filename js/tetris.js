@@ -23,14 +23,15 @@ var Tetris = function(canvas, numRows, numCols) {
 	this.cellHeight = canvas.height / numRows;
 
 	// Game data and dynamic variables
-	this.staticBlocks = [];
-	for (i = 0; i < numRows; i++) { // Initialize a 2d array
-		this.staticBlocks[i] = [];
+	this.staticBlocks = []; // 2d array
+	for (i = 0; i < this.numRows; i++) {
+		this.staticBlocks[i] = new Array(this.numCols).fill(null);
 	}
 	this.msToFallOneRow = globals.INITIAL_MS_PER_ROW;
 	this.msInCurrentRow = 0;
+	this.msInCurrentAnimation = 0;
 	this.prevFrameTimestamp = null;
-};
+}
 
 /**
  * Main animation loop
@@ -52,7 +53,7 @@ Tetris.prototype.run = function() {
 	this.drawStaticBlocks();
 
 	window.requestAnimationFrame(this.run.bind(this));
-};
+}
 
 /**
  * Returns the amount of time in milliseconds since this function was last called.  Modifies this.prevFrameTimestamp.
@@ -114,16 +115,10 @@ Tetris.prototype.tryTranslateRight = function() {
  * grid or a static block, freezes the current block and makes a new block to fall from the top of the grid.
  */
 Tetris.prototype.translateDownAndHandleCollisions = function() {
-	var currentBlock = this.currentBlock;
-	currentBlock.translateDown();
+	this.currentBlock.translateDown();
 	if (!this.hasValidLocation(this.currentBlock)) {
-		for (i in currentBlock.occupiedSpaces) {
-			var coordinate = currentBlock.occupiedSpaces[i];
-			var row = coordinate.row;
-			var col = coordinate.col;
-			this.staticBlocks[row][col] = new Block('static', row, col, currentBlock.color);
-		}
-		this.currentBlock = Block.createRandomBlock(globals.BLOCK_SPAWN_ROW, globals.BLOCK_SPAWN_COL);
+		this.replaceCurrentBlock();
+		this.animateCompleteRows();
 	}
 }
 
@@ -144,6 +139,55 @@ Tetris.prototype.tryRotateCounterclockwise = function() {
 	this.currentBlock.rotateCounterclockwise();
 	if (!this.hasValidLocation(this.currentBlock)) {
 		this.currentBlock.rotateClockwise();
+	}
+}
+
+/**
+ * Creates static blocks where the current block is and replaces the current block with a new one to fall from the top.
+ */
+Tetris.prototype.replaceCurrentBlock = function() {
+	var currentBlock = this.currentBlock;
+	for (i in currentBlock.occupiedSpaces) {
+		var coordinate = currentBlock.occupiedSpaces[i];
+		var row = coordinate.row;
+		var col = coordinate.col;
+		this.staticBlocks[row][col] = new Block('static', row, col, currentBlock.color);
+	}
+	this.currentBlock = Block.createRandomBlock(globals.BLOCK_SPAWN_ROW, globals.BLOCK_SPAWN_COL);
+}
+
+/**
+ * Colors all complete rows a different color, and then after a short delay, clears them.
+ */
+Tetris.prototype.animateCompleteRows = function() {
+	for (i = this.numRows - 1; i >= 0; i--) {
+
+		if (this.staticBlocks[i].every(block => block != null)) {
+			this.staticBlocks[i].every(block => block.color = globals.CLEARED_BLOCK_COLOR);
+		}
+	}
+	window.setTimeout(this.clearCompleteRows.bind(this), globals.CLEAR_ROW_ANIMATION_LEN);
+}
+
+/**
+ * Clears all complete rows and translates rows above them down.
+ */
+Tetris.prototype.clearCompleteRows = function() {
+	for (i = this.numRows - 1; i >= 0; i--) {
+
+		if (this.staticBlocks[i].every(block => block != null)) {
+
+			for (j = i; j >= 1; j--) { // Shift rows above rowLoc down
+				this.staticBlocks[j] = this.staticBlocks[j - 1];
+				this.staticBlocks[j].forEach( function(block) {
+					if (block) {
+						block.translateDown();
+					}
+				});
+			}
+			this.staticBlocks[0] = new Array(this.numCols).fill(null);
+			i++; // Row i-1 was moved to row i, so we need to do this to compensate for the i-- in the for loop.
+		}
 	}
 }
 
