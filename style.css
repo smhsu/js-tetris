@@ -4,7 +4,7 @@
 	border: 1px solid black;
 }
 
-#info-panel {
+.info {
 	border: 1px solid black;
 	padding-left: 20px;
 	padding-right: 20px;
@@ -13,14 +13,16 @@
 	font-family: sans-serif;
 }
 
-#info-panel h4 {
+#main-info-panel h4 {
 	margin-top: 3em;
 }
 
-#info-panel canvas {
+#main-info-panel canvas {
 	height: 9.5vh;
 }
 
-#controls {
-	border: 1px solid black;
+#controls ul li {
+	display: inline-block;
+	margin-right: 20px;
+	text-transform: uppercase;
 }

@@ -68,6 +68,18 @@ var Block = function(type, row, col, color) {
 	}
 }
 
+//                      0    1    2    3    4    5    6
+Block.BLOCK_NUMBERS = ['i', 'j', 'l', 'o', 's', 't', 'z'];
+Block.BLOCK_COLORS = {
+	'i': 'red',
+	'j': 'magenta',
+	'l': 'yellow',
+	'o': 'cyan',
+	's': 'blue',
+	't': 'grey',
+	'z': 'lime'
+};
+
 /**
  * Creates a block of random type.  All blocks of the same type will have the same color.
  * Parameters:
@@ -75,9 +87,9 @@ var Block = function(type, row, col, color) {
  *   col - column for the center of rotation
  */
 Block.createRandomBlock = function(row, col) {
-	var num = Math.floor(Math.random() * globals.BLOCK_NUMBERS.length);
-	var type = globals.BLOCK_NUMBERS[num];
-	var color = globals.BLOCK_COLORS[type];
+	var num = Math.floor(Math.random() * Block.BLOCK_NUMBERS.length);
+	var type = Block.BLOCK_NUMBERS[num];
+	var color = Block.BLOCK_COLORS[type];
 	return new Block(type, row, col, color);
 }
 
