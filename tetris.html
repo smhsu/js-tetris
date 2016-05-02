@@ -12,21 +12,34 @@
 <body>
 	<table>
 		<tr>
-			<td>
-				<canvas id="canvas"></canvas>
+			<td rowspan='2'>
+				<canvas id='main-canvas'></canvas>
 			</td>
 			<td id='info-panel'>
-				<h2>tetris.html</h2>
-				<p><i>A quick-and-dirty personal project by Silas Hsu</i></p>
+				<h1>tetris.html</h1>
+				<p class='subtitle'><i>A quick-and-dirty personal project by Silas Hsu</i></p>
+
+				<h4>Next block</h4>
+				<canvas></canvas>
+
+				<h4>Level</h4>
+				<p class='level'>0</p>
+
+				<h4>Score</h4>
+				<p class='score'>0</p>
+			</td>
+		</tr>
+		<tr>
+			<td id='controls'>
 			</td>
 		</tr>
 	</table>
 
-	<script src="js/jquery-1.12.3.min.js"></script>
-	<script src="js/globals.js"></script>
-	<script src="js/tetris.js"></script>
-	<script src="js/coordinate.js"></script>
-	<script src="js/block.js"></script>
-	<script src="js/main.js"></script>
+	<script src='js/jquery-1.12.3.min.js'></script>
+	<script src='js/globals.js'></script>
+	<script src='js/tetris.js'></script>
+	<script src='js/coordinate.js'></script>
+	<script src='js/block.js'></script>
+	<script src='js/main.js'></script>
 </body>
 </html>

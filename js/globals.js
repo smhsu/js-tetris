@@ -6,17 +6,33 @@
  ***/
 
 globals = {
-	CANVAS_WIDTH: 400,
+	CANVAS_WIDTH: 400, // Essentially, the resolution of the canvas
 	CANVAS_HEIGHT: 800,
 	NUM_ROWS: 20,
 	NUM_COLS: 10,
 
+	/*
+	The resolution of the next block canvas will be dynamically derived from the main canvas so it has the same
+	pixels-per-cell.
+	*/
+	nextBlockPanel: {
+		NUM_ROWS: 2,
+		NUM_COLS: 4,
+		DRAW_ROW: 0,
+		DRAW_COL: 1,
+	},
+	NEXT_BLOCK_CANVAS_SELECTOR: 'canvas', // Selectors apply inside of the info panel only.
+	SCORE_DOM_SELECTOR: '.score',
+	LEVEL_DOM_SELECTOR: '.level',
+
+	BASE_SCORE_PER_LINE_CLEAR: 100,
 	ROW_CLEARS_TO_ADVANCE_LEVEL: 6,
-	LEVEL_SPEED_INCREASE: 0.1, // Percentage increase
+	SPEED_INCREASE_FACTOR: 0.9, // Lower values = more speed for falling blocks per level
+	SCORE_INCREASE_FACTOR: 1.1,
 
 	BLOCK_SPAWN_ROW: 0,
 	BLOCK_SPAWN_COL: 4,
-	INITIAL_MS_PER_ROW: 800,
+	BASE_MS_PER_ROW: 800,
 	CLEAR_ROW_ANIMATION_LEN: 150,
 
 	MOVE_LEFT_KEY: 'a',

@@ -1,12 +1,22 @@
+/***
+ * Main.js
+ * Creates a tetris object to run, and binds keys as well.
+ ***/
+
 window.onload = init;
 
 function init() {
-	var canvas = document.getElementById('canvas');
+	var canvas = document.getElementById('main-canvas');
 	canvas.width = globals.CANVAS_WIDTH;
 	canvas.height = globals.CANVAS_HEIGHT;
 
-	var tetris = new Tetris(canvas, globals.NUM_ROWS, globals.NUM_COLS);
-	tetris.currentBlock = new Block('i', 0, 5, 'red');
+	var nextBlockCanvas = $('#info-panel canvas');
+	var pixelsPerRow = globals.CANVAS_HEIGHT / globals.NUM_ROWS;
+	var pixelsPerCol = globals.CANVAS_WIDTH / globals.NUM_COL;
+	nextBlockCanvas.width = Math.round(pixelsPerCol * globals.nextBlockPanel.NUM_COLS);
+	nextBlockCanvas.height = Math.round(pixelsPerRow * globals.nextBlockPanel.NUM_ROWS);
+
+	var tetris = new Tetris(canvas, $('#info-panel'), globals.NUM_ROWS, globals.NUM_COLS);
 	bindKeys(tetris);
 	tetris.run();
 }

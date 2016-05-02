@@ -1,7 +1,7 @@
-canvas {
+#main-canvas {
 	height: 95vh;
-	border: 1px solid black;
 	margin-right: 30px;
+	border: 1px solid black;
 }
 
 #info-panel {
@@ -11,4 +11,16 @@ canvas {
 
 	vertical-align: top;
 	font-family: sans-serif;
+}
+
+#info-panel h4 {
+	margin-top: 3em;
+}
+
+#info-panel canvas {
+	height: 9.5vh;
+}
+
+#controls {
+	border: 1px solid black;
 }
