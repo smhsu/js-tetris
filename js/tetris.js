@@ -10,7 +10,7 @@
  * Creates a new Tetris object.
  * Parameters:
  *   canvas - main HTML5 canvas on which to draw the game
- *   infoPanel - a jQuery DOM element that describes the info panel
+ *   infoPanel - a jQuery DOM element that contains the info panel
  *   numRows - number of rows in the grid
  *   numCols - number of cols in the grid
  */
@@ -72,8 +72,12 @@ Tetris.prototype.run = function() {
 	// Calculations done, time to draw a bunch of stuff!
 	this.clearCanvas();
 	this.drawGridLines();
-	this.drawBlock(this.currentBlock);
 	this.drawStaticBlocks();
+	this.drawBlock(this.currentBlock);
+	if (!this.hasValidLocation(this.currentBlock)) {
+		this.drawGameOver();
+		return;
+	}
 
 	window.requestAnimationFrame(this.run.bind(this));
 }
@@ -329,6 +333,21 @@ Tetris.prototype.drawStaticBlocks = function() {
 			}
 		}
 	}
+}
+
+/**
+ * Draws a translucent "GAME OVER" screen over the entire canvas.
+ */
+Tetris.prototype.drawGameOver = function() {
+	var ctx = this.canvasContext;
+	ctx.fillStyle = 'rgba(255,255,255,0.7)';
+	ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+	ctx.fillStyle = 'black';
+	ctx.font = 'bold 2.5em sans-serif';
+	ctx.textAlign = 'center';
+	ctx.textBaseline = 'middle';
+	ctx.fillText("GAME OVER", Math.round(this.canvas.width/2), Math.round(this.canvas.height/2));
 }
 
 /**
